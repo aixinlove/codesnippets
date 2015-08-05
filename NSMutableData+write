@@ -1,0 +1,24 @@
+extension NSMutableData {
+    func write<T>(value:T){
+        var v = value
+        if v is String{
+            if let v = v as? String,let data = v.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: true){
+                self.appendData(data)
+            }
+        }else if v is NSData{
+            if let v = v as? NSData{
+               self.appendData(v)
+            }
+        }else if v is UInt8 || v is UInt16 || v is UInt32 || v is UInt64 || v is Int8 || v is Int16 || v is Int32 || v is Int64{
+            self.appendBytes(&v, length: sizeof(T))
+        }else{
+            assertionFailure("write unsupport type")
+        }
+    }
+
+    func replace(hex:String,with:String) -> NSMutableData{
+        var string = self.toHexString().lowercaseString
+        string = string.stringByReplacingOccurrencesOfString(hex, withString: with, options: NSStringCompareOptions.LiteralSearch, range: nil)
+        return NSData.fromHexString(string).mutableCopy() as! NSMutableData
+    }
+}
