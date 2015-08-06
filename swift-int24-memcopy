@@ -1,0 +1,53 @@
+struct Int24 {
+    var value:(Int8,Int8,Int8)
+    var int32Value:Int32{
+        return (Int32(value.2) << 16) + (Int32(value.1) << 8) + (Int32(value.0) << 0)
+    }
+}
+struct UInt24 {
+    var value:(UInt8,UInt8,UInt8)
+    var uInt32Value:UInt32{
+        return (UInt32(value.2) << 16) + (UInt32(value.1) << 8) + (UInt32(value.0) << 0)
+    }
+}
+struct ObdSum {
+    var timestamp:UInt32
+    private var _mileage:UInt24
+    private var _fuel:Int24
+    private var _duration:Int24
+    var mileage:UInt32{
+        return _mileage.uInt32Value
+    }
+    var duration:Int32{
+        return _duration.int32Value
+    }
+    var fuel:Int32{
+        return _fuel.int32Value
+    }
+}
+struct Realtime {
+    var timestamp:UInt32
+    var rpm:UInt16
+    var speed:UInt8
+    var fuel:UInt16
+    var engin:UInt8
+}
+struct VehiclePara {
+    var timestamp:UInt32
+    var fuleLevel:UInt8
+    var waterTemp:Int8
+}
+func parse<T>(hex:String) -> T{
+    let data = NSData.fromHexString(hex)
+    var tuple = UnsafeMutablePointer<T>.alloc(1)
+    memcpy(tuple, data.bytes, data.length)
+    tuple.dealloc(1)
+    var t:T = tuple.memory
+    return t
+}
+var realtime:Realtime = parse("1E12B6558C307D650E0E0000000000D7")
+var vehiclepara:VehiclePara = parse("2512B65500AF000000000000000000CF")
+var obdsum:ObdSum = parse("1C12B655DEFA006F4A004407000000F8")
+let mileage = obdsum.mileage
+let duration = obdsum.duration
+let fuel = obdsum.fuel
