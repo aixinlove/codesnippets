@@ -1,3 +1,4 @@
+#!/usr/bin/env swift
 //
 //  home.swift
 //  Main
@@ -6,9 +7,19 @@
 //  Created by peng on 15/8/13.
 //  Copyright © 2015年 peng. All rights reserved.
 //
+#!/usr/bin/env swift
 import Foundation
-
-if let input = Process.arguments.last{
-    let output = " ".join(input.componentsSeparatedByString(" ").map{"".join($0.characters.filter{ $0 != Character(" ")}.map{ String(format: "%X", 15 - strtoul(String($0), nil, 16))})})
-    print(output, appendNewline: true)
+if let input = Process.arguments.last where Process.arguments.count == 2{
+	let output = " ".join(
+	    input.componentsSeparatedByString(" ").map{
+	        "".join(
+	            $0.characters.filter{
+	                $0 != Character(" ")
+	            }.map{
+	                String(format: "%X", 15 - strtoul(String($0), nil, 16))
+	            }
+	        )
+	    }
+	)
+	print(output, appendNewline: true)
 }
