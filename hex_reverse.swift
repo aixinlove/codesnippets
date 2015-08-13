@@ -8,15 +8,12 @@
 //  Copyright © 2015年 peng. All rights reserved.
 //
 import Foundation
+
 if let input = Process.arguments.last where Process.arguments.count == 2{
     let output = input.componentsSeparatedByString(" ").map{
-        "".join(
-            $0.characters.filter{
-                $0 != Character(" ")
-                }.map{
-                    String(format: "%X", 15 - strtoul(String($0), nil, 16))
-            }
-        )
+        $0.characters.filter{ $0 != Character(" ")}.map{
+            String(format: "%X", 15 - strtoul(String($0), nil, 16))
+        }.reduce("",combine: {"\($0)\($1)"})
     }.reduce("", combine: {"\($0) \($1)"})
     print(output, appendNewline: true)
 }
